@@ -1,0 +1,27 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Book List</h2>
+<section class="container mx-auto">
+    <ul class="grid grid-cols-1 sm:grid-cols-3 items-center justify-center">
+        {% for book in books %}
+        <li class="h-full">
+            <div class="card w-96 bg-base-100 shadow-xl">
+                <figure>
+                    <img src="{{book.image.url}}" alt="{{ book.title }}" />
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title truncate">{{ book.title }}</h2>
+
+                    <div class="card-actions justify-end">
+                        <a
+                            href="{% url 'book_detail' pk=book.pk %}"
+                            class="btn btn-primary"
+                            >Details</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}
