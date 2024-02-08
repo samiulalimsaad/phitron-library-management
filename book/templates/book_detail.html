@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block content %}
+<h2>{{ book.title }}</h2>
+<p>Description: {{ book.description }}</p>
+<!-- Display other book details -->
+
+<!-- Review form goes here -->
+<form method="post" action="{% url 'book_detail' pk=book.pk %}">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Submit Review</button>
+</form>
+{% endblock %}
