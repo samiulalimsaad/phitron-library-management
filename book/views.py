@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -50,9 +51,27 @@ class BookDetailView(LoginRequiredMixin, DetailView):
 
 
 class UserRegistrationView(FormView):
-    template_name = "registration.html"
+    """
+    Class-based view for user registration.
+    """
+
+    template_name = "users/registration.html"
     form_class = UserRegistrationForm
-    success_url = reverse_lazy("register_success")
+    success_url = reverse_lazy("book_list")
+
+    def form_valid(self, form):
+        """
+        If the form is valid, save the user instance and authenticate the user.
+        """
+        user = form.save()
+        username = form.cleaned_data.get("username")
+        password = form.cleaned_data.get("password1")
+        authenticated_user = authenticate(
+            self.request, username=username, password=password
+        )
+        if authenticated_user is not None:
+            login(self.request, authenticated_user)
+        return super().form_valid(form)
 
 
 class DepositView(FormView):
