@@ -29,3 +29,10 @@ class BorrowForm(forms.Form):
 
 class ReturnForm(forms.Form):
     book_id = forms.IntegerField(label="Book ID")
+
+
+class UserProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "first_name", "last_name"]
