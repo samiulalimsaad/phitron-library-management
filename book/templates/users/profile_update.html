@@ -1,0 +1,12 @@
+{% include "base.html" %} {%load tailwind_filters %} {% block content %}
+
+<section class="container mx-auto">
+    <div>
+        <h1>Update Profile</h1>
+        <form method="post">
+            {% csrf_token %} {{ form|crispy }}
+            <button type="submit">Update</button>
+        </form>
+    </div>
+</section>
+{% endblock content %}

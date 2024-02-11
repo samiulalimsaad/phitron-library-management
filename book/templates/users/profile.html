@@ -1,0 +1,11 @@
+{% extends 'base.html' %} {% block content %}
+
+<section class="container mx-auto flex items-center justify-center">
+    <div>
+        <h1 class="text-xl font-semi-bold text-center">User Profile</h1>
+        <div class="divider"></div>
+        <p>Username: {{ user.username }}</p>
+        <p>Email: {{ user.email }}</p>
+    </div>
+</section>
+{% endblock content %}
