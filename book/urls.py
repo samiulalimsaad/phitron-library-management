@@ -12,6 +12,7 @@ from .views import (
     DepositView,
     ReturnBookView,
     ReturnView,
+    UserProfileDetailView,
     UserRegistrationView,
 )
 
@@ -24,6 +25,7 @@ urlpatterns = [
     path("login/", LoginView.as_view(template_name="users/login.html"), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("register/", UserRegistrationView.as_view(), name="register"),
+    path("profile/", UserProfileDetailView.as_view(), name="profile"),
     path("deposit/", DepositView.as_view(), name="deposit"),
     path("borrow/", BorrowView.as_view(), name="borrow"),
     path("return/", ReturnView.as_view(), name="return"),
