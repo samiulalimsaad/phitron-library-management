@@ -1,13 +1,22 @@
-<div class="bg-slate-200">
-    <nav class="navbar container mx-auto">
-        <div class="navbar-start">
-            <a class="btn btn-ghost text-xl">BookHub</a>
-        </div>
-        <div class="navbar-end">
-            <ul class="menu menu-horizontal px-1">
-                <li><a>Books</a></li>
-                <li><a>Profile</a></li>
-            </ul>
-        </div>
-    </nav>
-</div>
+<nav class="bg-blue-500 p-4">
+    <div class="container mx-auto flex justify-between items-center">
+        <a href="{% url 'book_list' %}" class="text-white text-lg font-semibold"
+            >Carmart</a
+        >
+        <ul class="flex space-x-4">
+            {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'profile' user.id %}" class="text-white"
+                    >Profile</a
+                >
+            </li>
+            <li><a class="text-white" href="/logout/">Logout</a></li>
+            {% else %}
+            <li><a class="text-white" href="{% url 'login' %}">Login</a></li>
+            <li>
+                <a class="text-white" href="{% url 'register' %}">Signup</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
