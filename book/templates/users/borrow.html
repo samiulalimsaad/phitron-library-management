@@ -2,7 +2,7 @@
 <div class="container mx-auto">
     <h1 class="text-2xl font-bold mb-4">Borrow a Book</h1>
     <div class="bg-white p-4 rounded-lg shadow">
-        <form action="{% url 'borrow_book' pk=book.pk %}" method="post">
+        <form action="{% url 'borrow_book' pk=book.id %}" method="post">
             {% csrf_token %} {{ form|crispy }}
 
             <button
