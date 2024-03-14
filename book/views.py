@@ -17,6 +17,10 @@ from .forms import (
 from .models import Book
 
 
+def home(args):
+    return redirect("book_list")
+
+
 class BookListView(ListView):
     model = Book
     template_name = "book_list.html"
