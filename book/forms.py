@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .models import Book
+from .models import Book, Review
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -31,8 +31,12 @@ class UserProfileForm(forms.ModelForm):
 class BorrowBookForm(forms.Form):
     book = forms.ModelChoiceField(queryset=Book.objects.all(), empty_label=None)
 
+    class Meta:
+        model = Book
+        fields = []
 
-class ReviewForm(forms.Form):
-    book = forms.ModelChoiceField(queryset=Book.objects.all(), empty_label=None)
-    text = forms.CharField(widget=forms.Textarea)
-    rating = forms.ChoiceField(choices=[(i, i) for i in range(1, 6)])
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["text", "rating"]
