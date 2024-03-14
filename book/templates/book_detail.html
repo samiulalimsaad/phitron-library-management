@@ -18,21 +18,60 @@
             {% endfor %}
         </ul>
 
-        <div class="flex items-center justify-between">
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold mb-4">Add a Review</h2>
+            <form action="{% url 'add_review' pk=book.id %}" method="post">
+                {% csrf_token %}
+                <!-- Hidden input field to pass the book ID -->
+                <input type="hidden" name="book" value="{{ book.id }}" />
+                <div class="mb-4">
+                    <label for="text" class="block text-sm font-bold mb-2"
+                        >Your Review:</label
+                    >
+                    <textarea
+                        name="text"
+                        id="text"
+                        rows="4"
+                        class="w-full p-2 border rounded"
+                    ></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="rating" class="block text-sm font-bold mb-2"
+                        >Rating:</label
+                    >
+                    <input
+                        type="number"
+                        name="rating"
+                        id="rating"
+                        min="1"
+                        max="5"
+                        class="w-full p-2 border rounded"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Submit Review
+                </button>
+            </form>
+        </div>
+        <div class="flex items-center justify-between mt-8">
             <!-- Borrow Book Form -->
-
-            <a
-                href="{% url 'borrow_book' pk=book.pk %}"
-                type="submit"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block"
-            >
-                Borrow Book
-            </a>
+            <form action="{% url 'borrow_book' pk=book.pk %}" method="post">
+                {% csrf_token %}
+                <button
+                    type="submit"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Borrow Book
+                </button>
+            </form>
 
             <!-- Link to Return Book Form -->
             <a
                 href="{% url 'return_book' pk=book.pk %}"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block ml-4"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 >Return Book</a
             >
         </div>
