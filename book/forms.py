@@ -32,6 +32,10 @@ class BorrowBookForm(forms.Form):
     book = forms.ModelChoiceField(queryset=Book.objects.all(), empty_label=None)
 
 
+class ReturnBookForm(forms.Form):
+    book = forms.ModelChoiceField(queryset=Book.objects.all(), empty_label=None)
+
+
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
