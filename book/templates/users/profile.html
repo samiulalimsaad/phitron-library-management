@@ -8,12 +8,9 @@
             Deposit Amount: ${{ user.useraccount.deposit_amount }}
         </p>
         <h2 class="text-xl font-bold mb-2">Borrowing History:</h2>
-        <ul>
+        <ul class="list-decimal ml-8 space-y-2">
             {% for history in borrowing_history %}
-            <li>
-                {{ history.book.title }} - Borrowed on: {{
-                history.borrowing_date }}
-            </li>
+            <li>{{ history.book.title }}</li>
             {% endfor %}
         </ul>
     </div>

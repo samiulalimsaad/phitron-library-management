@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
@@ -192,14 +192,12 @@ class ReturnView(FormView):
     success_url = reverse_lazy("profile")
 
 
-class UserProfileDetailView(LoginRequiredMixin, DetailView):
+def profile_view(request):
+    borrowing_history = BorrowingHistory.objects.filter(user=request.user)
 
-    model = User
-    template_name = "users/profile.html"
-    context_object_name = "user"
-
-    def get_object(self, queryset=None):
-        return self.request.user
+    return render(
+        request, "users/profile.html", {"borrowing_history": borrowing_history}
+    )
 
 
 class UserProfileUpdateView(UpdateView):
