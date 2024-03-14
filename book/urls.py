@@ -8,11 +8,9 @@ from .views import (
     BookDetailView,
     BookListView,
     BorrowBookView,
-    BorrowView,
     DepositSuccessView,
     DepositView,
     ReturnBookView,
-    ReturnView,
     UserProfileDetailView,
     UserRegistrationView,
     home,
@@ -31,8 +29,6 @@ urlpatterns = [
     path("profile/", UserProfileDetailView.as_view(), name="profile"),
     path("deposit/", DepositView.as_view(), name="deposit"),
     path("success/", DepositSuccessView.as_view(), name="success"),
-    path("borrow/", BorrowView.as_view(), name="borrow"),
-    path("return/", ReturnView.as_view(), name="return"),
 ]
 
 
