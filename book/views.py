@@ -6,7 +6,6 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import (
     DetailView,
     FormView,
@@ -18,12 +17,13 @@ from django.views.generic import (
 from .forms import (
     BorrowBookForm,
     DepositForm,
+    ReturnBookForm,
     ReturnForm,
     ReviewForm,
     UserProfileForm,
     UserRegistrationForm,
 )
-from .models import Book, BorrowingHistory, UserAccount
+from .models import Book, BorrowingHistory, ReturnHistory, UserAccount
 
 
 def home(args):
@@ -82,9 +82,31 @@ class BorrowBookView(FormView):
         return super().form_valid(form)
 
 
-class ReturnBookView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
-        return redirect("user_profile")
+class ReturnBookView(FormView):
+    template_name = "users/return.html"
+    form_class = ReturnBookForm
+    success_url = "success_deposit"
+
+    def form_valid(self, form):
+        book_id = form.cleaned_data["book"]
+
+        borrowing_history = BorrowingHistory.objects.get(
+            book_id=book_id, user=self.request.user
+        )
+
+        borrowed_amount = borrowing_history.book.borrowing_price
+
+        user_account = UserAccount.objects.get(user=self.request.user)
+        user_account.deposit_amount += borrowed_amount
+        user_account.save()
+
+        ReturnHistory.objects.create(
+            user=self.request.user, book=borrowing_history.book
+        )
+
+        borrowing_history.delete()
+
+        return redirect(self.get_success_url())
 
 
 class BookDetailView(LoginRequiredMixin, DetailView):
@@ -98,7 +120,7 @@ class BookDetailView(LoginRequiredMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        # Handle book review logic
+
         return redirect("book_detail", pk=kwargs["pk"])
 
 
