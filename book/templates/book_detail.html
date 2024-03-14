@@ -18,6 +18,7 @@
             {% endfor %}
         </ul>
 
+        {% if can_add_review %}
         <div class="mt-8">
             <h2 class="text-2xl font-bold mb-4">Add a Review</h2>
             <form action="{% url 'add_review' pk=book.id %}" method="post">
@@ -56,20 +57,22 @@
                 </button>
             </form>
         </div>
+        {% endif %}
+
         <div class="flex items-center justify-between mt-8">
             <!-- Borrow Book Form -->
+            {%if not can_add_review%}
             <form action="{% url 'borrow_book' pk=book.id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}" />
                 <button
                     type="submit"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    class="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded"
                 >
                     Borrow Book
                 </button>
             </form>
-
-            <!-- Link to Return Book Form -->
+            {%endif%} {%if can_add_review%}
             <form action="{% url 'return_book' pk=book.id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}" />
@@ -80,6 +83,7 @@
                     Return Book
                 </button>
             </form>
+            {%endif%}
         </div>
     </div>
 </div>
