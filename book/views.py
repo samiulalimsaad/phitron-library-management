@@ -61,7 +61,7 @@ class BorrowBookView(FormView):
         book_id = self.kwargs["pk"]
         book = Book.objects.get(pk=book_id)
         amount = book.borrowing_price
-        print(amount)
+
         try:
 
             user_account = UserAccount.objects.get(user=current_user)
@@ -113,15 +113,34 @@ class BookDetailView(LoginRequiredMixin, DetailView):
     model = Book
     template_name = "book_detail.html"
     context_object_name = "book"
+    success_url = reverse_lazy("success_borrow")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = ReviewForm()
+
+        user = self.request.user
+        book = self.get_object()
+        context["can_add_review"] = book.borrowinghistory_set.filter(user=user).exists()
+
         return context
 
     def post(self, request, *args, **kwargs):
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            book_id = kwargs["pk"]
+            book = Book.objects.get(pk=book_id)
 
-        return redirect("book_detail", pk=kwargs["pk"])
+            review = form.save(commit=False)
+            review.book = book
+            review.user = self.request.user
+            review.save()
+
+            return redirect("book_detail", pk=book_id)
+        else:
+            context = self.get_context_data(**kwargs)
+            context["form"] = form
+            return self.render_to_response(context)
 
 
 class UserRegistrationView(FormView):
@@ -231,3 +250,17 @@ class UserProfileUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    template_name = "users/review.html"
+    form_class = ReviewForm
+
+    def form_valid(self, form):
+        book_id = self.kwargs["pk"]
+        book = Book.objects.get(pk=book_id)
+
+        review = form.save(commit=False)
+        review.book = book
+        review.user = self.request.user
+        review.save()
+
+        return redirect("book_details", pk=book_id)
