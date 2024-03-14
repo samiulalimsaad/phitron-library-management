@@ -21,7 +21,7 @@ from .forms import (
     UserProfileForm,
     UserRegistrationForm,
 )
-from .models import Book, BorrowingHistory, Review, UserAccount
+from .models import Book, BorrowingHistory, UserAccount
 
 
 def home(args):
@@ -40,13 +40,11 @@ class BorrowBookView(FormView):
     success_url = reverse_lazy("book_list")
 
     def form_valid(self, form):
-        book_id = form.cleaned_data["book"]
+        book_id = self.kwargs["pk"]
         book = Book.objects.get(pk=book_id)
 
         # Create a borrowing history record
         BorrowingHistory.objects.create(user=self.request.user, book=book)
-
-        # Optionally, you can decrement the available copies of the book here
 
         messages.success(
             self.request, f"You have borrowed '{book.title}' successfully!"
@@ -98,24 +96,22 @@ class DepositView(FormView):
     success_url = reverse_lazy("success")
 
     def form_valid(self, form):
-        # Get the current user
+
         current_user = self.request.user
 
         try:
-            # Get the current user's account
+
             user_account = UserAccount.objects.get(user=current_user)
         except UserAccount.DoesNotExist:
-            # If user account doesn't exist, create a new one
+
             user_account = UserAccount.objects.create(
                 user=current_user, deposit_amount=0
             )
 
-        # Process the deposit
         amount = form.cleaned_data["amount"]
         user_account.deposit_amount += amount
         user_account.save()
 
-        # Add a success message
         messages.success(self.request, "Deposit successful!")
 
         return super().form_valid(form)
@@ -136,15 +132,13 @@ class AddReviewView(FormView):
     success_url = reverse_lazy("book_list")
 
     def form_valid(self, form):
-        book_id = form.cleaned_data["book"]
+        book_id = self.kwargs["pk"]
         book = Book.objects.get(pk=book_id)
-        text = form.cleaned_data["text"]
-        rating = form.cleaned_data["rating"]
 
-        # Create a review for the book
-        Review.objects.create(
-            user=self.request.user, book=book, text=text, rating=rating
-        )
+        review = form.save(commit=False)
+        review.book = book
+        review.user = self.request.user
+        review.save()
 
         messages.success(self.request, "Your review has been added successfully!")
         return super().form_valid(form)
