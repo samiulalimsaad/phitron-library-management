@@ -54,13 +54,26 @@ class BookListView(ListView):
 class BorrowBookView(FormView):
     template_name = "users/borrow.html"
     form_class = BorrowBookForm
-    success_url = reverse_lazy("book_list")
+    success_url = reverse_lazy("success_borrow")
 
     def form_valid(self, form):
+        current_user = self.request.user
         book_id = self.kwargs["pk"]
         book = Book.objects.get(pk=book_id)
+        amount = book.borrowing_price
+        print(amount)
+        try:
 
-        # Create a borrowing history record
+            user_account = UserAccount.objects.get(user=current_user)
+        except UserAccount.DoesNotExist:
+
+            user_account = UserAccount.objects.create(
+                user=current_user, deposit_amount=0
+            )
+
+        user_account.deposit_amount -= amount
+        user_account.save()
+        send_borrow_email(current_user.email, book.title, amount)
         BorrowingHistory.objects.create(user=self.request.user, book=book)
 
         messages.success(
@@ -110,7 +123,7 @@ class UserRegistrationView(FormView):
 class DepositView(FormView):
     template_name = "users/deposit.html"
     form_class = DepositForm
-    success_url = reverse_lazy("success")
+    success_url = reverse_lazy("success_deposit")
 
     def form_valid(self, form):
 
@@ -143,6 +156,15 @@ class DepositSuccessView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["message"] = "Deposit successful!"
+        return context
+
+
+class BorrowSuccessView(TemplateView):
+    template_name = "users/success.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = "borrowed successfully!"
         return context
 
 
