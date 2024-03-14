@@ -17,6 +17,25 @@
             <li>{{ category.name }}</li>
             {% endfor %}
         </ul>
+
+        <div class="flex items-center justify-between">
+            <!-- Borrow Book Form -->
+
+            <a
+                href="{% url 'borrow_book' pk=book.pk %}"
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block"
+            >
+                Borrow Book
+            </a>
+
+            <!-- Link to Return Book Form -->
+            <a
+                href="{% url 'return_book' pk=book.pk %}"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block ml-4"
+                >Return Book</a
+            >
+        </div>
     </div>
 </div>
 {% endblock %}
