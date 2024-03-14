@@ -1,0 +1,9 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mx-auto">
+    {% if message %}
+    <div class="alert alert-success text-white">
+        <strong>Success!</strong> {{ message }}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -9,7 +9,10 @@
                 <a href="{% url 'profile' %}" class="text-white">Profile</a>
             </li>
             <li>
-                <form action="/logout/" method="POST">
+                <a href="{% url 'deposit' %}" class="text-white">Deposit</a>
+            </li>
+            <li>
+                <form action="{% url 'logout' %}" method="POST">
                     {% csrf_token %}
                     <button class="text-white">Logout</button>
                 </form>

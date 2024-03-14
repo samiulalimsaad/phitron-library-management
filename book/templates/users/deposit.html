@@ -1,8 +1,27 @@
 {% extends 'base.html' %} {% block content %}
-<h2>Deposit Money</h2>
-<form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Deposit</button>
-</form>
-
-{% endblock content %}
+<div class="container mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Deposit Money</h1>
+    <div class="bg-white p-6 rounded-lg shadow">
+        <form action="{% url 'deposit' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="amount" class="block text-sm font-bold mb-2"
+                    >Amount:</label
+                >
+                <input
+                    type="number"
+                    name="amount"
+                    id="amount"
+                    class="w-full p-2 border rounded"
+                />
+            </div>
+            <button
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                Deposit
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

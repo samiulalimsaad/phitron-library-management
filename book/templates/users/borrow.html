@@ -1,8 +1,26 @@
 {% extends 'base.html' %} {% block content %}
-<h2>Borrow Book</h2>
-<form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Borrow</button>
-</form>
-
-{% endblock content %}
+<div class="container mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Borrow a Book</h1>
+    <div class="bg-white p-6 rounded-lg shadow">
+        <form action="{% url 'borrow' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="book" class="block text-sm font-bold mb-2"
+                    >Select a Book:</label
+                >
+                <select name="book" id="book" class="w-full p-2 border rounded">
+                    {% for book in books %}
+                    <option value="{{ book.id }}">{{ book.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+                Borrow
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
