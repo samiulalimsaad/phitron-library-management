@@ -5,6 +5,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
 from .views import (
+    AddReviewView,
     BookDetailView,
     BookListView,
     BorrowBookView,
@@ -22,6 +23,7 @@ urlpatterns = [
     path("books/<int:pk>/borrow/", BorrowBookView.as_view(), name="borrow_book"),
     path("books/<int:pk>/return/", ReturnBookView.as_view(), name="return_book"),
     path("books/<int:pk>/", BookDetailView.as_view(), name="book_detail"),
+    path("books/<int:pk>/add_review/", AddReviewView.as_view(), name="add_review"),
     # users
     path("login/", LoginView.as_view(template_name="users/login.html"), name="login"),
     path("logout/", LogoutView.as_view(next_page="home"), name="logout"),
