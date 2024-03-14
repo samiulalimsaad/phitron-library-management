@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import (
@@ -14,14 +14,14 @@ from django.views.generic import (
 )
 
 from .forms import (
-    BorrowForm,
+    BorrowBookForm,
     DepositForm,
     ReturnForm,
     ReviewForm,
     UserProfileForm,
     UserRegistrationForm,
 )
-from .models import Book, UserAccount
+from .models import Book, BorrowingHistory, Review, UserAccount
 
 
 def home(args):
@@ -34,16 +34,24 @@ class BookListView(ListView):
     context_object_name = "books"
 
 
-class BorrowBookView(LoginRequiredMixin, View):
-    template_name = "borrow_book.html"
+class BorrowBookView(FormView):
+    template_name = "users/borrow.html"
+    form_class = BorrowBookForm
+    success_url = reverse_lazy("book_list")
 
-    def get(self, request, *args, **kwargs):
-        book_id = kwargs["pk"]
+    def form_valid(self, form):
+        book_id = form.cleaned_data["book"]
         book = Book.objects.get(pk=book_id)
-        return render(request, self.template_name, {"book": book})
 
-    def post(self, request, *args, **kwargs):
-        return redirect("book_list")
+        # Create a borrowing history record
+        BorrowingHistory.objects.create(user=self.request.user, book=book)
+
+        # Optionally, you can decrement the available copies of the book here
+
+        messages.success(
+            self.request, f"You have borrowed '{book.title}' successfully!"
+        )
+        return super().form_valid(form)
 
 
 class ReturnBookView(LoginRequiredMixin, View):
@@ -122,10 +130,24 @@ class DepositSuccessView(TemplateView):
         return context
 
 
-class BorrowView(FormView):
-    template_name = "users/borrow.html"
-    form_class = BorrowForm
-    success_url = reverse_lazy("profile")
+class AddReviewView(FormView):
+    template_name = "users/add_review.html"
+    form_class = ReviewForm
+    success_url = reverse_lazy("book_list")
+
+    def form_valid(self, form):
+        book_id = form.cleaned_data["book"]
+        book = Book.objects.get(pk=book_id)
+        text = form.cleaned_data["text"]
+        rating = form.cleaned_data["rating"]
+
+        # Create a review for the book
+        Review.objects.create(
+            user=self.request.user, book=book, text=text, rating=rating
+        )
+
+        messages.success(self.request, "Your review has been added successfully!")
+        return super().form_valid(form)
 
 
 class ReturnView(FormView):
