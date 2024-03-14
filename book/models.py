@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -40,3 +41,19 @@ class BorrowingHistory(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     borrowing_date = models.DateField(auto_now_add=True)
     return_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        unique_together = (("user", "book"),)
+
+    def clean(self):
+        if BorrowingHistory.objects.filter(user=self.user, book=self.book).exists():
+            raise ValidationError("This user has already borrowed this book.")
+
+
+class ReturnHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    return_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} returned {self.book.title} on {self.return_date}"
