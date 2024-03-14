@@ -1,2 +1,2 @@
-You have successfully borrowed the book "{{ book_title }}" for {{
-borrowed_amount }} Taka.
+{% load humanize %} You have successfully borrowed the book "{{ book_title }}"
+for {{ borrowed_amount|floatformat:2 }} Taka.
