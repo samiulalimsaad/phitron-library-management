@@ -1,10 +1,17 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DetailView, FormView, ListView, UpdateView
+from django.views.generic import (
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
 
 from .forms import (
     BorrowForm,
@@ -14,7 +21,7 @@ from .forms import (
     UserProfileForm,
     UserRegistrationForm,
 )
-from .models import Book
+from .models import Book, UserAccount
 
 
 def home(args):
@@ -78,21 +85,53 @@ class UserRegistrationView(FormView):
 
 
 class DepositView(FormView):
-    template_name = "deposit.html"
+    template_name = "users/deposit.html"
     form_class = DepositForm
-    success_url = reverse_lazy("deposit_success")
+    success_url = reverse_lazy("success")
+
+    def form_valid(self, form):
+        # Get the current user
+        current_user = self.request.user
+
+        try:
+            # Get the current user's account
+            user_account = UserAccount.objects.get(user=current_user)
+        except UserAccount.DoesNotExist:
+            # If user account doesn't exist, create a new one
+            user_account = UserAccount.objects.create(
+                user=current_user, deposit_amount=0
+            )
+
+        # Process the deposit
+        amount = form.cleaned_data["amount"]
+        user_account.deposit_amount += amount
+        user_account.save()
+
+        # Add a success message
+        messages.success(self.request, "Deposit successful!")
+
+        return super().form_valid(form)
+
+
+class DepositSuccessView(TemplateView):
+    template_name = "users/success.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["message"] = "Deposit successful!"
+        return context
 
 
 class BorrowView(FormView):
-    template_name = "borrow.html"
+    template_name = "users/borrow.html"
     form_class = BorrowForm
-    success_url = reverse_lazy("borrow_success")
+    success_url = reverse_lazy("profile")
 
 
 class ReturnView(FormView):
-    template_name = "return.html"
+    template_name = "users/return.html"
     form_class = ReturnForm
-    success_url = reverse_lazy("return_success")
+    success_url = reverse_lazy("profile")
 
 
 class UserProfileDetailView(LoginRequiredMixin, DetailView):
