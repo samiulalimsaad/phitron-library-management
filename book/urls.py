@@ -9,6 +9,7 @@ from .views import (
     BookListView,
     BorrowBookView,
     BorrowView,
+    DepositSuccessView,
     DepositView,
     ReturnBookView,
     ReturnView,
@@ -29,6 +30,7 @@ urlpatterns = [
     path("register/", UserRegistrationView.as_view(), name="register"),
     path("profile/", UserProfileDetailView.as_view(), name="profile"),
     path("deposit/", DepositView.as_view(), name="deposit"),
+    path("success/", DepositSuccessView.as_view(), name="success"),
     path("borrow/", BorrowView.as_view(), name="borrow"),
     path("return/", ReturnView.as_view(), name="return"),
 ]
