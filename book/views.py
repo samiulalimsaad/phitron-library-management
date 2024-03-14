@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import (
@@ -26,6 +28,21 @@ from .models import Book, BorrowingHistory, UserAccount
 
 def home(args):
     return redirect("book_list")
+
+
+def send_deposit_email(user_email, amount):
+    subject = "Deposit Confirmation"
+    message = render_to_string("emails/deposit_email.html", {"amount": amount})
+    send_mail(subject, message, None, [user_email])
+
+
+def send_borrow_email(user_email, book_title, borrowed_amount):
+    subject = "Book Borrowed"
+    message = render_to_string(
+        "emails/borrow_email.html",
+        {"book_title": book_title, "borrowed_amount": borrowed_amount},
+    )
+    send_mail(subject, message, None, [user_email])
 
 
 class BookListView(ListView):
@@ -111,6 +128,9 @@ class DepositView(FormView):
         amount = form.cleaned_data["amount"]
         user_account.deposit_amount += amount
         user_account.save()
+        print(current_user.email)
+
+        send_deposit_email(current_user.email, amount)
 
         messages.success(self.request, "Deposit successful!")
 
