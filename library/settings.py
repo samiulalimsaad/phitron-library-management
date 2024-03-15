@@ -29,9 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-%txo_eip4lss=$(j75cz_4%9fga%t3^8kgt0-p_!tso@lfk@-u"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEVELOPMENT').lower() == 'true'
 
-ALLOWED_HOSTS = ["phitron-library-management.onrender.com",'https://phitron-library-management.onrender.com','http://*127.0.0.1']
+ALLOWED_HOSTS = ["phitron-library-management.onrender.com",'127.0.0.1']
 
 
 # Application definition
