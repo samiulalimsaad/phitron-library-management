@@ -33,6 +33,9 @@ DEBUG = os.getenv('DEVELOPMENT').lower() == 'true'
 
 ALLOWED_HOSTS = ["phitron-library-management.onrender.com",'127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
+
+
 
 # Application definition
 
