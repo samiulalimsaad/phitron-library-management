@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -30,7 +31,7 @@ SECRET_KEY = "django-insecure-%txo_eip4lss=$(j75cz_4%9fga%t3^8kgt0-p_!tso@lfk@-u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://phitron-library-management.onrender.com",'http://*127.0.0.1']
 
 
 # Application definition
@@ -88,11 +89,15 @@ WSGI_APPLICATION = "library.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(default=os.getenv("DB_URL")),
 }
 
 
