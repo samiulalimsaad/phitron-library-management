@@ -31,7 +31,7 @@ SECRET_KEY = "django-insecure-%txo_eip4lss=$(j75cz_4%9fga%t3^8kgt0-p_!tso@lfk@-u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["phitron-library-management.onrender.com",'http://*127.0.0.1']
+ALLOWED_HOSTS = ["phitron-library-management.onrender.com",'https://phitron-library-management.onrender.com','http://*127.0.0.1']
 
 
 # Application definition
