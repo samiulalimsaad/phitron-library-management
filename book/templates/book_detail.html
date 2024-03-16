@@ -18,6 +18,23 @@
             {% endfor %}
         </ul>
 
+        <div>
+            <h2 class="text-2xl font-bold mb-4 mt-8">User Reviews</h2>
+            {% if book.review_set.all %}
+            <ul>
+                {% for review in book.review_set.all %}
+                <li>
+                    <p>{{ review.text }}</p>
+                    <p>Rating: {{ review.rating }}</p>
+                    <p>By: {{ review.user }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No reviews yet.</p>
+            {% endif %}
+        </div>
+
         {% if can_add_review %}
         <div class="mt-8">
             <h2 class="text-2xl font-bold mb-4">Add a Review</h2>
@@ -60,8 +77,8 @@
         {% endif %}
 
         <div class="flex items-center justify-between mt-8">
+            {% if not can_add_review %}
             <!-- Borrow Book Form -->
-            {%if not can_add_review%}
             <form action="{% url 'borrow_book' pk=book.id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}" />
@@ -72,7 +89,8 @@
                     Borrow Book
                 </button>
             </form>
-            {%endif%} {%if can_add_review%}
+            {% else %}
+            <!-- Return Book Form -->
             <form action="{% url 'return_book' pk=book.id %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="book" value="{{ book.id }}" />
@@ -83,7 +101,7 @@
                     Return Book
                 </button>
             </form>
-            {%endif%}
+            {% endif %}
         </div>
     </div>
 </div>
