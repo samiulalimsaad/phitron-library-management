@@ -35,6 +35,9 @@ class UserAccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     deposit_amount = models.DecimalField(max_digits=8, decimal_places=2)
 
+    def __str__(self):
+        return f"{self.user.username}'s balance {self.deposit_amount}"
+
 
 class BorrowingHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
