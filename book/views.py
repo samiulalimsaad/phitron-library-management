@@ -23,7 +23,7 @@ from .forms import (
     UserProfileForm,
     UserRegistrationForm,
 )
-from .models import Book, BorrowingHistory, ReturnHistory, UserAccount
+from .models import Book, BorrowingHistory, Category, ReturnHistory, UserAccount
 
 
 def home(args):
@@ -50,8 +50,20 @@ class BookListView(ListView):
     template_name = "book_list.html"
     context_object_name = "books"
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category_id = self.request.GET.get("category")
+        if category_id:
+            queryset = queryset.filter(categories__id=category_id)
+        return queryset
 
-class BorrowBookView(FormView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
+        return context
+
+
+class BorrowBookView(LoginRequiredMixin, FormView):
     template_name = "users/borrow.html"
     form_class = BorrowBookForm
     success_url = reverse_lazy("success_borrow")
@@ -82,7 +94,7 @@ class BorrowBookView(FormView):
         return super().form_valid(form)
 
 
-class ReturnBookView(FormView):
+class ReturnBookView(LoginRequiredMixin, FormView):
     template_name = "users/return.html"
     form_class = ReturnBookForm
     success_url = "success_deposit"
@@ -161,7 +173,7 @@ class UserRegistrationView(FormView):
         return super().form_valid(form)
 
 
-class DepositView(FormView):
+class DepositView(LoginRequiredMixin, FormView):
     template_name = "users/deposit.html"
     form_class = DepositForm
     success_url = reverse_lazy("success_deposit")
@@ -191,7 +203,7 @@ class DepositView(FormView):
         return super().form_valid(form)
 
 
-class DepositSuccessView(TemplateView):
+class DepositSuccessView(LoginRequiredMixin, TemplateView):
     template_name = "users/success.html"
 
     def get_context_data(self, **kwargs):
@@ -200,7 +212,7 @@ class DepositSuccessView(TemplateView):
         return context
 
 
-class BorrowSuccessView(TemplateView):
+class BorrowSuccessView(LoginRequiredMixin, TemplateView):
     template_name = "users/success.html"
 
     def get_context_data(self, **kwargs):
@@ -209,7 +221,7 @@ class BorrowSuccessView(TemplateView):
         return context
 
 
-class AddReviewView(FormView):
+class AddReviewView(LoginRequiredMixin, FormView):
     template_name = "users/add_review.html"
     form_class = ReviewForm
     success_url = reverse_lazy("book_list")
@@ -227,7 +239,7 @@ class AddReviewView(FormView):
         return super().form_valid(form)
 
 
-class ReturnView(FormView):
+class ReturnView(LoginRequiredMixin, FormView):
     template_name = "users/return.html"
     form_class = ReturnForm
     success_url = reverse_lazy("profile")
@@ -241,7 +253,7 @@ def profile_view(request):
     )
 
 
-class UserProfileUpdateView(UpdateView):
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
     model = User
     form_class = UserProfileForm

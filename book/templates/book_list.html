@@ -1,32 +1,51 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container mx-auto">
     <h1 class="text-2xl font-bold mb-4">Book List</h1>
-    <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-    >
-        {% for book in books %}
-        <div class="bg-white card card-compact shadow">
-            <figure>
-                <img
-                    src="{{ book.image.url }}"
-                    alt="{{ book.title }}"
-                    class="w-full h-32 object-cover mb-4"
-                />
-            </figure>
-            <div class="card-body">
-                <h2 class="card-title">{{ book.title }}</h2>
-                <p class="mb-2">{{ book.description }}</p>
-                <p class="text-gray-600">{{ book.borrowing_price }} Taka</p>
-            </div>
-            <div class="card-actions p-4">
-                <a
-                    href="{% url 'book_detail' book.pk %}"
-                    class="btn btn-info btn-outline btn-sm"
-                    >View Details</a
-                >
-            </div>
+    <div class="grid grid-cols-12">
+        <div class="col-span-2">
+            <h2 class="text-lg font-semibold mb-2">Filter by Category</h2>
+            <ul class="menu bg-base-200 w-56 rounded-box">
+                <li><a href="{% url 'book_list' %}">All Categories</a></li>
+                {% for category in categories %}
+                <li>
+                    <a href="{% url 'book_list' %}?category={{ category.pk }}"
+                        >{{ category.name }}</a
+                    >
+                </li>
+                {% endfor %}
+            </ul>
         </div>
-        {% endfor %}
+
+        <div
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 col-span-10"
+        >
+            <!-- Category Filtering Section -->
+
+            <!-- Book Cards Section -->
+            {% for book in books %}
+            <div class="bg-white card card-compact shadow">
+                <figure>
+                    <img
+                        src="{{ book.image.url }}"
+                        alt="{{ book.title }}"
+                        class="w-full h-32 object-cover mb-4"
+                    />
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title">{{ book.title }}</h2>
+                    <p class="mb-2">{{ book.description }}</p>
+                    <p class="text-gray-600">{{ book.borrowing_price }} Taka</p>
+                </div>
+                <div class="card-actions p-4">
+                    <a
+                        href="{% url 'book_detail' book.pk %}"
+                        class="btn btn-info btn-outline btn-sm"
+                        >View Details</a
+                    >
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}
