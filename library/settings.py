@@ -29,12 +29,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-%txo_eip4lss=$(j75cz_4%9fga%t3^8kgt0-p_!tso@lfk@-u"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEVELOPMENT').lower() == 'true'
+DEBUG = os.getenv("DEVELOPMENT").lower() == "true"
 
-ALLOWED_HOSTS = ["phitron-library-management.onrender.com",'127.0.0.1']
+ALLOWED_HOSTS = ["phitron-library-management.onrender.com", "127.0.0.1"]
 
-CSRF_TRUSTED_ORIGINS = ["https://phitron-library-management.onrender.com",'http://127.0.0.1']
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://phitron-library-management.onrender.com",
+    "http://127.0.0.1",
+]
 
 
 # Application definition
@@ -139,7 +141,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 
 # Default primary key field type
