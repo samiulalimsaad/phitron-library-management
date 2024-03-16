@@ -6,6 +6,9 @@
         <ul class="flex space-x-4">
             {% if user.is_authenticated %}
             <li>
+                <a href="{% url 'book_list' %}" class="text-white">Books</a>
+            </li>
+            <li>
                 <a href="{% url 'profile' %}" class="text-white">Profile</a>
             </li>
             <li>
